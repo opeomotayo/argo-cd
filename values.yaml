@@ -1,0 +1,45 @@
+dex:
+  enabled: false
+
+server:
+  extraArgs:
+    - --insecure
+
+  additionalApplications: 
+  - name: argo-cd
+    namespace: argo-cd
+    project: argo-cd
+    source:
+      repoURL: git@github.com:opeomotayo/argo-cd.git
+      path: manifests/
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: default
+    syncPolicy: 
+      automated: 
+        selfHeal: false
+
+  additionalProjects: 
+  - name: argo-cd
+    namespace: argo-cd
+    sourceRepos:
+    - git@github.com:opeomotayo/argo-cd.git
+    destinations:
+    - namespace: default
+      server: https://kubernetes.default.svc
+ 
+configs:
+  knownHosts:
+    data:
+      ssh_known_hosts: |
+        # ssh known hosts data. You can use output from ssh-keyscan or the contents from an ssh_known_hosts file.
+        |1|B4eSnBQitgk+lxjlDgiYY4WNm2k=|xwoJWLmvHtfqPf0zVFru3AOmz48= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+        |1|M7txWfOk8Djy4jajKuaBdF8IOmQ=|cO9abXdKMN5yHgK/WT2o+AkujTI= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+        |1|PPVv4A5bYoTFFalh+Gyy++IiTQg=|xSGeEyChSnz5g4MfLcj/pdc1AsI= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+  credentialTemplates: 
+    ssh-creds:
+      url: git@github.com:opeomotayo/argo-cd.git
+      
+  secret:
+    createSecret: true
+    argocdServerAdminPassword: "$2a$10$E6zXkEmxKVVrUqVprP7bG.gUeo5Wc95X.8XFH3pmv.DZHPSJluGrO" #htpasswd -nbBC 10 "" $password | tr -d ':\n' | sed 's/$2y/$2a/'
